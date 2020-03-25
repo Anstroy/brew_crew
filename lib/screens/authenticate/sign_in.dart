@@ -1,5 +1,6 @@
 import 'package:brew_crew/screens/authenticate/authenticate.dart';
 import 'package:flutter/material.dart';
+import 'package:brew_crew/shared/constants.dart';
 
 import '../../services/auth.dart';
 
@@ -53,19 +54,22 @@ class _SignInState extends State<SignIn> {
                   onChanged: (val) {
                     setState(() => email = val);
                   },
+                  decoration: TextInputDecoration.copyWith(hintText: 'Email'),
                 ),
                 SizedBox(
                   height: 20.0,
                 ),
                 TextFormField(
-                  /* setting validator */
-                  validator: (val) =>
-                      val.length < 6 ? 'Password must be 6+ characters' : null,
-                  obscureText: true,
-                  onChanged: (val) {
-                    setState(() => password = val);
-                  },
-                ),
+                    /* setting validator */
+                    validator: (val) => val.length < 6
+                        ? 'Password must be 6+ characters'
+                        : null,
+                    obscureText: true,
+                    onChanged: (val) {
+                      setState(() => password = val);
+                    },
+                    decoration:
+                        TextInputDecoration.copyWith(hintText: 'Password')),
                 SizedBox(
                   height: 20.0,
                 ),
