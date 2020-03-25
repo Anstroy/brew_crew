@@ -14,10 +14,13 @@ class SignIn extends StatefulWidget {
 
 class _SignInState extends State<SignIn> {
   final AuthService _auth = AuthService();
+  /* Creating a validator to then bind it to any form */
+  final _formKey = GlobalKey<FormState>();
 
   // text field state
   String email = '';
   String password = '';
+  String error = '';
 
   @override
   Widget build(BuildContext context) {
@@ -38,12 +41,15 @@ class _SignInState extends State<SignIn> {
       body: Container(
           padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
           child: Form(
+            key: _formKey, // binding the private validator key to this property
             child: Column(
               children: <Widget>[
                 SizedBox(
                   height: 20.0,
                 ),
                 TextFormField(
+                  /* setting validator */
+                  validator: (val) => val.isEmpty ? 'Enter an email' : null,
                   onChanged: (val) {
                     setState(() => email = val);
                   },
@@ -52,6 +58,9 @@ class _SignInState extends State<SignIn> {
                   height: 20.0,
                 ),
                 TextFormField(
+                  /* setting validator */
+                  validator: (val) =>
+                      val.length < 6 ? 'Password must be 6+ characters' : null,
                   obscureText: true,
                   onChanged: (val) {
                     setState(() => password = val);
@@ -65,8 +74,23 @@ class _SignInState extends State<SignIn> {
                     child:
                         Text('Sign in', style: TextStyle(color: Colors.white)),
                     onPressed: () async {
-                      print(email + password);
-                    })
+                      error = '';
+                      if (_formKey.currentState.validate()) {
+                        /* if the form is valid, then do something */
+                        if (_formKey.currentState.validate()) {
+                          dynamic result = await _auth
+                              .signInWithEmailAndPassword(email, password);
+                          if (result == null) {
+                            setState(() => error =
+                                'Could not sign in with those credentials.');
+                          }
+                        }
+                      }
+                    }),
+                SizedBox(
+                  height: 12.0,
+                ),
+                Text(error, style: TextStyle(color: Colors.red, fontSize: 14.0))
               ],
             ),
           )),
